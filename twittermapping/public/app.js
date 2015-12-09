@@ -1,24 +1,52 @@
-$function(){
 
-  // var searchTwitter = function() {
-  // 	var name = $('#name-input').val();
-  // 	var lat = currentLocation.geometry.location.lat();
-  // 	var lng = currentLocation.geometry.location.lng();
-		// // console.log('ajax to create map');
-		// var mapData = {
-		// 	name: name,
-		// 	city_lat: lat,
-		// 	city_lng: lng 
-		// };
-		// $.ajax({
-		// 	url: "http://localhost:3000/search/tweets",
-		// 	method: "POST",
-		// 	data: mapData
-		// }).done();
-  // };
+angular.module('TwitterMapper', []).directive('ngtwittermapper', function() {
+	return {
 
 
+		controllerAs: 'twitterMapper',
+		controller: ['$http', function tweetsCtrl($http) {
+			this.$http = $http;
+
+			var self = this;
+
+
+			this.createUser = function(){
+				var userData = {
+					username: this.formUsername,
+					password_hash: this.formPassword
+				};
+				console.log(userData);
+				self.$http.post('/users', userData).then(function success(response){
+					self.formUsername = '';
+					self.formPassword = '';
+				},function error() {
+					console.log('error');
+				});
+			}
 
 
 
-});//END OF WINDOW ONLOAD
+			this.loginUser = function(){
+				var userData = {
+					username: this.formLoginUsername,
+					password_hash: this.formLoginPassword
+				};
+				console.log(userData);
+				self.$http.post('/users/login', userData).then(function success(response){
+					self.formLoginUsername = '';
+					self.formLoginPassword = '';
+				},function error() {
+					console.log('error');
+				});
+			}
+		}]
+	}
+});
+
+
+
+
+
+
+
+
