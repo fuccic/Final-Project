@@ -1,6 +1,7 @@
 // =============
 // REQUIREMENTS
 // =============
+require('dotenv').load();
 var express = require('express'),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
@@ -10,10 +11,13 @@ var express = require('express'),
     httpServer = require('http-server'),
     twitter = require('twitter'),
     sentiment = require('sentiment'),
-    env = require('dotenv').load();
+    app = express(),
+    http = require('http').Server(app),
+    io = require('socket.io')(http);
+
 
 var port = process.env.PORT || 3000;
-var app = express();
+
 
 var client = new twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -47,14 +51,16 @@ var Search = require('./models/search');
 // =============
 // LISTENER
 // =============
-app.listen(port);
+http.listen(port);
+// http.listen(process.env.PORT || 3000);
 
 // =============
 // Twitter API Search Get Request
 // =============
 app.get('/test', function(req, res){
-	client.get('/search/tweets', {q: 'obama', count: 1}, function(error, tweets, response){
+	client.post('/statuses/filter', {q: 'cat', count: 1}, function(error, tweets, response){
     var namesArray = [];
+    console.log(tweets);
 		for (var i = 0; i < tweets.statuses.length; i++) {
       namesArray.push(tweets.statuses[i].text);
     };
@@ -161,5 +167,50 @@ app.post('/users/login', function(req, res){
 //   });
 // });
 
+// =============
+// Sockets Code
+// =============
+//Create web sockets connection.
+// io.sockets.on('connection', function (socket) {
+
+//   //Code to run when socket.io is setup.
+//   socket.on("start tweets", function() {
+
+//     if(stream === null) {
+      //Connect to twitter stream passing in filter for entire world.
+
+io.on('connection', function(socket) {
+  console.log("your mom")
+  socket.on('activate', function(input) { 
+    console.log("socket on")
+    client.stream('statuses/filter', { locations:'-180,-90,180,90' }, function(s) {
+      stream = s;
+      stream.on('data', function(data) {
+              // Does the JSON result have coordinates
+              // console.log(data.text)
+        if (data.coordinates){
+          if (data.coordinates !== null){
+            //If so then build up some nice json and send out to web sockets
+            var outputPoint = {"lat": data.coordinates.coordinates[0],"lng": data.coordinates.coordinates[1]};
+
+            io.emit("twitter-stream", outputPoint);
+
+            console.log(outputPoint);
+            console.log(data.text);
+
+            //Send out to web sockets channel.
+            io.emit('twitter-stream', outputPoint);
+          }
+        }
+      });
+    });
+  })
+});
+
+
+    // Emits signal to the client telling them that the
+    // they are connected and can start receiving Tweets
+    // socket.emit("connected");
+// });
 
 
