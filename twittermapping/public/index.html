@@ -15,14 +15,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
   <script src="https://www.workshape.io/js/geo/d3.geo.zoom.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
-  <script type="text/javascript" src="sockets.js"></script>
 </head>
 <body>
 
   <canvas id='globe' width='1000' height='1000'></canvas>  
 
 
-<button id='start-stream'>Stream</button>
+  <input type='text' id='search-bar'>
+  <button id='start-stream'>Stream</button>
+  <button id="stop-stream">Stop it!</button>
 
 
   <div ng-app="TwitterMapper">
@@ -55,7 +56,7 @@
 
 
 
-
+  <script type="text/javascript" src="sockets.js"></script>
   <script type='text/javascript' src='planetaryjs.min.js'></script>
   <script type="text/javascript" src="app.js"></script> 
   <script type="text/javascript" src="map.js"></script>

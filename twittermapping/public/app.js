@@ -40,6 +40,13 @@ var app = angular.module('TwitterMapper', [])
 						console.log('error');
 					});
 				}
+
+				this.searchTwitter = function(){
+					var searchToken = {
+						searchTerm: this.formSearch
+					}
+					self.$http.post()
+				}
 			}]
 		}
 	});

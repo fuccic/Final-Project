@@ -57,19 +57,35 @@ http.listen(port);
 // =============
 // Twitter API Search Get Request
 // =============
-app.get('/test', function(req, res){
-	client.post('/statuses/filter', {q: 'cat', count: 1}, function(error, tweets, response){
-    var namesArray = [];
-    console.log(tweets);
-		for (var i = 0; i < tweets.statuses.length; i++) {
-      namesArray.push(tweets.statuses[i].text);
-    };
-    var r1 = sentiment(namesArray[0]);
-    namesArray.push(r1.score); 
-    res.send(namesArray);
 
-	});
-})
+// app.get('/search_test', function(req, res) {
+//     client.get('search/tweets', {
+//         geocode: '37.781157,-122.398720,24901mi', count: 1
+//     }, function(error, tweets, response) {
+//       var namesArray = [];
+//       console.log(tweets.statuses)
+//       for (var i = 0; i < tweets.statuses.length; i++) {
+//         namesArray.push(tweets.statuses[i]);
+//       };
+//       // var r1 = sentiment(namesArray[0]);
+//       // namesArray.push(r1.score); 
+//       res.send(namesArray);
+//     });
+// })
+// app.get('/test', function(req, res){
+// 	client.post('/statuses/filter', {locations: '-180,-90,180,90'}, function(error, tweets, response){
+//     var namesArray = [];
+//     console.log(tweets);
+// 		for (var i = 0; i < tweets.statuses.length; i++) {
+//       namesArray.push(tweets.statuses[i].text);
+//     };
+//     var r1 = sentiment(namesArray[0]);
+//     namesArray.push(r1.score); 
+//     res.send(namesArray);
+
+// 	});
+// })
+
 
 
 // =============
@@ -179,33 +195,101 @@ app.post('/users/login', function(req, res){
 //     if(stream === null) {
       //Connect to twitter stream passing in filter for entire world.
 
+var streamOn = ""
+
+var streamOff = function(input) {
+
+  socket.removeListener('activate', streamOn);
+
+}
+
+// client.stream('statuses/filter', {track: 'Trump'}, function(stream) {
+//   stream.on('data', function(tweet) {
+//     console.log('OTHERS: ', tweet.text);
+//   });
+ 
+//   stream.on('error', function(error) {
+//     console.log('The error, is: ', error);
+//   });
+// });
+
+
+
+
+var startArray = [];
+
+
+
+
 io.on('connection', function(socket) {
-  console.log("your mom")
-  socket.on('activate', function(input) { 
-    console.log("socket on")
-    client.stream('statuses/filter', { locations:'-180,-90,180,90' }, function(s) {
-      stream = s;
-      stream.on('data', function(data) {
-              // Does the JSON result have coordinates
-              // console.log(data.text)
-        if (data.coordinates){
-          if (data.coordinates !== null){
-            //If so then build up some nice json and send out to web sockets
-            var outputPoint = {"lat": data.coordinates.coordinates[0],"lng": data.coordinates.coordinates[1]};
 
-            io.emit("twitter-stream", outputPoint);
+// twit.currentTwitStream = stream;
+// This is only a suggestion. Perhaps you have a central configuration object which would be a better place for the current stream object. With currentTwitStream you can do this:
 
-            console.log(outputPoint);
-            console.log(data.text);
+// currentTwitStream.readable is false after an error or close.
+// currentTwitStream.destroy()
+  
+    console.log('a user connected');
+    
+    socket.on('activate', function(input) {
+      console.log('From client (activate): ', input);
 
-            //Send out to web sockets channel.
-            io.emit('twitter-stream', outputPoint);
-          }
-        }
-      });
-    });
-  })
-});
+      console.log('current twit stream: ', client.currentClientStream);
+
+      client.stream('statuses/filter', { locations: '-180,-90,180,90' }, function(s) {
+            stream = s;
+            stream.on('data', function(data) {
+              
+                // Does the JSON result have coordinates
+                // console.log(data.text)
+                if (data.coordinates){
+                  if (data.coordinates !== null){
+                    //If so then build up some nice json and send out to web sockets
+                    // console.log(data);
+                    var outputPoint = {"lat": data.coordinates.coordinates[1],"lng": data.coordinates.coordinates[0]};
+                    startArray.push(outputPoint);
+
+                    // console.log('Start Array! :)    ->', startArray);
+                    // io.emit("twitter-stream", outputPoint);
+
+                    console.log(outputPoint);
+                    console.log(startArray.length);
+                    // console.log(data.text);
+                    // console.log(data.text);
+
+                    //Send out to web sockets channel.
+                    io.emit('twitter-stream', outputPoint);
+                  }
+                }
+                if (startArray.length > 300) { 
+            
+                  stream.destroy();
+                  console.log('DESTROYyed>');
+                  console.log('IF! AFTER THE END', outputPoint);
+                  // console.log('AFTER THE END', outputPoint);
+                  // console.log('AFTER THE END', outputPoint);
+
+                };//end of if statement
+
+                socket.on('deactivate', function(yes) {
+
+                  // console.log('Stream: ', stream);
+                  stream.destroy();
+                  console.log('DESTROYyed> by butn');
+                  console.log('BUTTON! AFTER THE END', outputPoint);
+                  // console.log('BUTTON! AFTER THE END', outputPoint);
+                  console.log('It is the length: ', startArray.length);
+                });
+
+            }); // end stream
+
+        }); // end client stream
+
+  });
+    // socket.on('deactivate', streamOff);
+        
+});//end of sockets
+
 
 
     // Emits signal to the client telling them that the

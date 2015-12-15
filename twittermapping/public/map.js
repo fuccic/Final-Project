@@ -3,7 +3,7 @@
   console.log('fuckity fuckity fuck')
   var globe = planetaryjs.planet();
   var plugin1 = planetaryjs.plugins;
-  console.log(plugin1);
+  // console.log(plugin1);
   // Load our custom `autorotate` plugin; see below.
   globe.loadPlugin(autorotate(10));
   // The `earth` plugin draws the oceans and the land; it's actually
@@ -44,8 +44,9 @@
   // Every few hundred milliseconds, we'll draw another random ping.
   var colors = ['red', 'yellow', 'white', 'orange', 'green', 'cyan', 'pink'];
   setInterval(function() {
-    var lat = Math.random() * 170 - 85;
-    var lng = Math.random() * 360 - 180;
+    console.log(locationsArray);
+    var lat = locationsArray[0].lat;
+    var lng = locationsArray[0].lng;
     var color = colors[Math.floor(Math.random() * colors.length)];
     var angle = Math.random() * 10;
 
