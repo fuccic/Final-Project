@@ -1,3 +1,15 @@
+var signinshit = function(){
+	if(Cookies.get('loggedinId') === undefined){
+		showSplashPage();
+	}else{
+		userShow();
+	}
+}
+
+
+
+
+
 
 var app = angular.module('TwitterMapper', [])
 	app.directive('ngtwittermapper', function() {
@@ -20,6 +32,7 @@ var app = angular.module('TwitterMapper', [])
 					self.$http.post('/users', userData).then(function success(response){
 						self.formUsername = '';
 						self.formPassword = '';
+						user = true;
 					},function error() {
 						console.log('error');
 					});
@@ -34,6 +47,7 @@ var app = angular.module('TwitterMapper', [])
 					};
 					// console.log(userData);
 					self.$http.post('/users/login', userData).then(function success(response){
+						user = true;
 						self.formLoginUsername = '';
 						self.formLoginPassword = '';
 					},function error() {
@@ -47,6 +61,9 @@ var app = angular.module('TwitterMapper', [])
 					}
 					self.$http.post()
 				}
+
+
+
 			}]
 		}
 	});

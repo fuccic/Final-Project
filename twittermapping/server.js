@@ -241,35 +241,38 @@ io.on('connection', function(socket) {
             stream.on('data', function(data) {
               
                 // Does the JSON result have coordinates
-                // console.log(data.text)
+                
                 if (data.coordinates){
-                  if (data.coordinates !== null){
+                  if (data.coordinates !== null && data.place!== null){
                     //If so then build up some nice json and send out to web sockets
                     // console.log(data);
                     var outputPoint = {"lat": data.coordinates.coordinates[1],"lng": data.coordinates.coordinates[0]};
                     startArray.push(outputPoint);
-
+                    var tweetText = data.text;
+                    var tweetLocation = data.place.country;
+                    // console.log(tweetLocation);
+                    var newOutput = [outputPoint, tweetText, tweetLocation];
                     // console.log('Start Array! :)    ->', startArray);
                     // io.emit("twitter-stream", outputPoint);
-
-                    console.log(outputPoint);
+                    console.log(newOutput);
+                    // console.log(outputPoint);
                     console.log(startArray.length);
                     // console.log(data.text);
                     // console.log(data.text);
 
                     //Send out to web sockets channel.
-                    io.emit('twitter-stream', outputPoint);
+                    io.emit('twitter-stream', newOutput);
                   }
                 }
-                if (startArray.length > 300) { 
+                // if (startArray.length > 300) { 
             
-                  stream.destroy();
-                  console.log('DESTROYyed>');
-                  console.log('IF! AFTER THE END', outputPoint);
-                  // console.log('AFTER THE END', outputPoint);
-                  // console.log('AFTER THE END', outputPoint);
+                //   stream.destroy();
+                //   console.log('DESTROYyed>');
+                //   console.log('IF! AFTER THE END', outputPoint);
+                //   // console.log('AFTER THE END', outputPoint);
+                //   // console.log('AFTER THE END', outputPoint);
 
-                };//end of if statement
+                // };//end of if statement
 
                 socket.on('deactivate', function(yes) {
 

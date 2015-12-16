@@ -4,6 +4,8 @@
 var socket = io();
 
 var locationsArray = [];
+var textArray = [];
+var citiesArray = [];
 // console.log(locationsArray);
 
 $(document).on('click', '#start-stream', function(){
@@ -17,7 +19,10 @@ $(document).on('click', '#start-stream', function(){
 		    locationsArray = [];
 	        var coolShit = tweet;
 	        locationsArray.push(coolShit);
-	        console.log(locationsArray[0].lng);
+	        // console.log(tweet[0].lat);
+	        $('#text-list').html(locationsArray[0][1]);
+	        $('#country-list').html(locationsArray[0][2]);
+	        
 		});
 })
 
@@ -27,5 +32,11 @@ $(document).on('click', '#stop-stream', function() {
 	
 	socket.emit('deactivate', 'deactivate');
 });
+
+
+
+var textStream = function(){
+
+}
 
 

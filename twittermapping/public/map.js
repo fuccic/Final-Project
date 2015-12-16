@@ -13,13 +13,13 @@
   // (world-110m-withlakes.json) so we can render lakes.
   globe.loadPlugin(planetaryjs.plugins.earth({
     topojson: { file:   'http://planetaryjs.com/world-110m-withlakes.json' },
-    oceans:   { fill:   '#000080' },
-    land:     { fill:   '#339966' },
-    borders:  { stroke: '#008000' }
+    oceans:   { fill:   '#888888' },
+    land:     { fill:   '#666666' },
+    borders:  { stroke: '#999999' }
   }));
   // Load our custom `lakes` plugin to draw lakes; see below.
   globe.loadPlugin(lakes({
-    fill: '#000080'
+    fill: '#888888'
   }));
   // The `pings` plugin draws animated pings on the globe.
   globe.loadPlugin(planetaryjs.plugins.pings());
@@ -39,25 +39,26 @@
     }
   }));
   // Set up the globe's initial scale, offset, and rotation.
-  globe.projection.scale(175).translate([175, 175]).rotate([0, -10, 0]);
+  globe.projection.scale(100).translate([187.5, 175]).rotate([0, -10, 0]);
 
   // Every few hundred milliseconds, we'll draw another random ping.
   var colors = ['red', 'yellow', 'white', 'orange', 'green', 'cyan', 'pink'];
-  setInterval(function() {
-    console.log(locationsArray);
-    var lat = locationsArray[0].lat;
-    var lng = locationsArray[0].lng;
-    var color = colors[Math.floor(Math.random() * colors.length)];
-    var angle = Math.random() * 10;
-
-  globe.plugins.pings.add(lng, lat, { color: color, ttl: 2000, angle: angle });
-  }, 250);
-
+  // if(locationsArray != []){
+    setInterval(function() {
+      // console.log(locationsArray[0][0].lat);
+      var lat = (locationsArray[0][0].lat);
+      var lng = (locationsArray[0][0].lng);
+      var color = colors[Math.floor(Math.random() * colors.length)];
+      var angle = Math.random() * 10;
+      console.log(locationsArray);
+    globe.plugins.pings.add(lng, lat, { color: color, ttl: 5000, angle: angle });
+    }, 200);
+  // }
   // Special code to handle high-density displays (e.g. retina, some phones)
   // In the future, Planetary.js will handle this by itself (or via a plugin).
   if (window.devicePixelRatio == 2) {
-    canvas.width = 800;
-    canvas.height = 800;
+    canvas.width = 750;
+    canvas.height = 750;
     context = canvas.getContext('2d');
     context.scale(2, 2);
   }
