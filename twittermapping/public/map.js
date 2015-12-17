@@ -50,7 +50,7 @@
       var lng = (locationsArray[0][0].lng);
       var color = colors[Math.floor(Math.random() * colors.length)];
       var angle = Math.random() * 10;
-      console.log(locationsArray);
+      // console.log(locationsArray);
     globe.plugins.pings.add(lng, lat, { color: color, ttl: 5000, angle: angle });
     }, 200);
   // }

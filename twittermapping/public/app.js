@@ -1,10 +1,4 @@
-var signinshit = function(){
-	if(Cookies.get('loggedinId') === undefined){
-		showSplashPage();
-	}else{
-		userShow();
-	}
-}
+
 
 
 
