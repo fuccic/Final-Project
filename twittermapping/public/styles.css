@@ -56,7 +56,12 @@ path {
 }
 
 .button{
-    margin-left: 60px;
+    margin-left: 35px;
+    background-color: #888888;
+}
+
+.button2{
+    margin: 50px, 0px, 50px, 0px;
 }
 
 /*#globe-ctrl{
@@ -73,6 +78,7 @@ canvas{
 
 body{
     /*background-color: papayawhip;*/
+    font-family: 'Bitter', serif;
 }
 
 .hidden{
